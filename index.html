@@ -1,560 +1,546 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FARM-OTTAH | Premium Nigerian Farm Marketplace</title>
-<link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FARM-OTTAH | Premium Nigerian Farm Marketplace</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="home-header">
+      <nav>
+        <h1 class="logo">FARM<span>-OTTAH</span></h1>
+        <ul id="navLinks">
+          <li><a href="#categories">Categories</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <section class="nav-right">
+          <button
+            class="cart-btn"
+            onclick="toggleCart()"
+            aria-label="Open cart"
+          >
+            🛒 Cart (<span id="cartCount">0</span>)
+          </button>
+          <button
+            class="hamburger"
+            id="hamburger"
+            onclick="toggleNav()"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </section>
+      </nav>
+    </header>
 
-</head>
-<body>
+    <!-- CART DRAWER -->
+    <div
+      class="cart-drawer"
+      id="cartDrawer"
+      role="dialog"
+      aria-label="Shopping cart"
+    >
+      <div class="cart-header">
+        <h3>Your Cart</h3>
+        <button onclick="toggleCart()" aria-label="Close cart">✕</button>
+      </div>
 
-<header>
-<nav>
-  <div class="logo">FARM<span>-OTTAH</span></div>
-  <ul id="navLinks">
-    <li><a href="#categories">Categories</a></li>
-    <li><a href="#products">Products</a></li>
-    <li><a href="#reviews">Reviews</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="nav-right">
-    <button class="cart-btn" onclick="toggleCart()" aria-label="Open cart">
-      🛒 Cart (<span id="cartCount">0</span>)
+      <div id="cartItems"><p class="cart-empty">Your cart is empty.</p></div>
+
+      <div class="cart-footer" id="cartFooter" style="display: none">
+        <p class="cart-total">Total: <strong id="cartTotal">₦0</strong></p>
+
+        <!-- Customer details (shown before Paystack) -->
+        <div class="customer-form" id="customerForm">
+          <p class="form-label">Your details for order confirmation:</p>
+          <input type="text" id="custName" placeholder="Full Name *" required />
+          <input
+            type="email"
+            id="custEmail"
+            placeholder="Email Address *"
+            required
+          />
+          <input
+            type="tel"
+            id="custPhone"
+            placeholder="Phone Number *"
+            required
+          />
+          <input
+            type="text"
+            id="custAddress"
+            placeholder="Delivery Address *"
+            required
+          />
+        </div>
+
+        <div class="checkout-btns">
+          <!-- WHATSAPP ORDER -->
+          <button class="btn-whatsapp" onclick="orderViaWhatsapp()">
+            <svg
+              viewBox="0 0 32 32"
+              fill="white"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16.003 3C9.376 3 4 8.373 4 15c0 2.385.67 4.61 1.832 6.5L4 29l7.695-1.807A12.94 12.94 0 0016.003 28c6.625 0 12-5.373 12-12S22.628 3 16.003 3zm0 22c-1.92 0-3.726-.502-5.287-1.38l-.378-.214-4.566 1.074 1.097-4.446-.236-.39A9.942 9.942 0 016.003 15c0-5.514 4.486-10 10-10s10 4.486 10 10-4.485 10-9.997 10zm5.49-7.43c-.302-.15-1.783-.877-2.059-.977-.276-.1-.477-.15-.678.15-.2.3-.778.977-.953 1.178-.175.2-.351.225-.652.075-.3-.15-1.267-.465-2.41-1.485-.891-.794-1.492-1.774-1.667-2.074-.175-.3-.018-.463.131-.612.135-.134.302-.35.452-.525.151-.175.2-.3.302-.5.1-.2.05-.375-.025-.525-.075-.15-.678-1.632-.928-2.235-.244-.587-.493-.508-.678-.517l-.577-.01c-.2 0-.525.075-.8.375s-1.05 1.027-1.05 2.507 1.075 2.907 1.225 3.107c.15.2 2.117 3.23 5.127 4.53.717.31 1.277.494 1.714.633.72.228 1.376.196 1.894.119.578-.086 1.782-.728 2.034-1.432.251-.703.251-1.306.176-1.432-.076-.126-.276-.2-.577-.35z"
+              />
+            </svg>
+            Order via WhatsApp
+          </button>
+
+          <div class="checkout-divider">or pay online</div>
+
+          <!-- PAYSTACK -->
+          <button class="btn-paystack" onclick="initiatePaystack()">
+            💳 Pay with Card / Transfer (₦<span id="paystackTotal">0</span>)
+          </button>
+        </div>
+
+        <button class="clear-btn" onclick="clearCart()">Clear Cart</button>
+      </div>
+    </div>
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Fresh Farm Products Delivered Nationwide</h1>
+        <p>
+          Premium Nigerian agricultural marketplace for homes, restaurants,
+          events & gifts.
+        </p>
+        <a href="#products" class="btn">Shop Now</a>
+      </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section id="categories">
+      <div class="container">
+        <h2 class="section-title">Shop Categories</h2>
+        <div class="grid">
+          <div
+            class="category"
+            onclick="filterProducts('vegetables')"
+            data-filter="vegetables"
+          >
+            🥬 Vegetables
+          </div>
+          <div
+            class="category"
+            onclick="filterProducts('grains')"
+            data-filter="grains"
+          >
+            🌾 Grains
+          </div>
+          <div
+            class="category"
+            onclick="filterProducts('tubers')"
+            data-filter="tubers"
+          >
+            🍠 Tubers
+          </div>
+          <div
+            class="category"
+            onclick="filterProducts('livestock')"
+            data-filter="livestock"
+          >
+            🐐 Livestock
+          </div>
+          <div
+            class="category"
+            onclick="filterProducts('frozen')"
+            data-filter="frozen"
+          >
+            🧊 Frozen Foods
+          </div>
+          <div
+            class="category"
+            onclick="filterProducts('festive')"
+            data-filter="festive"
+          >
+            🎁 Festive Packages
+          </div>
+          <div
+            class="category"
+            onclick="filterProducts('all')"
+            data-filter="all"
+          >
+            🛒 All Products
+          </div>
+          <div
+            class="category"
+            onclick="filterProducts('pantry')"
+            data-filter="pantry"
+          >
+            🛢️ Oils & Pantry
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products">
+      <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <p id="activeFilter" class="filter-label"></p>
+
+        <div class="products" id="productGrid">
+          <div class="product" data-category="tubers">
+            <img
+              src="https://media.istockphoto.com/id/1395343560/photo/whole-and-halved-raw-african-yam-on-wooden-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=wraUWRkNT_ayKhBUZA8cdOjdIaaNwexG7U4xR8SCtEo="
+              alt="Large Nigerian Yam Tubers"
+            />
+            <div class="product-body">
+              <h3>Large Yam (3-5 Tubers)</h3>
+              <p class="price" data-price="12500">₦12,500</p>
+              <select id="select-yam">
+                <option value="Small Bundle (3 pcs)">
+                  Small Bundle (3 pcs)
+                </option>
+                <option value="Large Bundle (5 pcs)">
+                  Large Bundle (5 pcs)
+                </option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Large Yam', 12500, 'select-yam')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="tubers">
+            <img
+              src="https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c3dlZXQlMjBwb3RhdG98ZW58MHx8MHx8fDA%3D"
+              alt="Sweet Potatoes"
+            />
+            <div class="product-body">
+              <h3>Sweet Potatoes</h3>
+              <p class="price" data-price="4500">₦4,500</p>
+              <select id="select-potatoes">
+                <option value="Paint Bucket">Paint Bucket</option>
+                <option value="Small Bag">Small Bag</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Sweet Potatoes', 4500, 'select-potatoes')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="grains">
+            <img
+              src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80"
+              alt="Premium Local Rice"
+            />
+            <div class="product-body">
+              <h3>Premium Local Rice</h3>
+              <p class="price" data-price="112000">₦112,000</p>
+              <select id="select-rice">
+                <option value="50kg Bag">50kg Bag</option>
+                <option value="25kg Bag">25kg Bag</option>
+                <option value="10kg Bag">10kg Bag</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Local Rice', 112000, 'select-rice')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="grains">
+            <img
+              src="https://images.unsplash.com/photo-1551462147-37885acc3c41?auto=format&fit=crop&w=800&q=80"
+              alt="Brown Beans"
+            />
+            <div class="product-body">
+              <h3>Honey Beans (Oloyin)</h3>
+              <p class="price" data-price="14500">₦14,500</p>
+              <select id="select-beans">
+                <option value="Paint Bucket">Paint Bucket</option>
+                <option value="Small Bag">Small Bag</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Honey Beans', 14500, 'select-beans')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="grains">
+            <img
+              src="https://images.unsplash.com/photo-1621460249232-02685764d0d0?auto=format&fit=crop&w=800&q=80"
+              alt="White Garri"
+            />
+            <div class="product-body">
+              <h3>Ijebu Garri (White)</h3>
+              <p class="price" data-price="22000">₦22,000</p>
+              <select id="select-garri">
+                <option value="Small Bag">Small Bag</option>
+                <option value="Big Bag (50kg)">Big Bag (50kg)</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Ijebu Garri', 22000, 'select-garri')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="livestock">
+            <img
+              src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80"
+              alt="Live Goat"
+            />
+            <div class="product-body">
+              <h3>Live Local Goat</h3>
+              <p class="price" data-price="85000">₦85,000</p>
+              <select id="select-goat">
+                <option value="Medium Size">Medium Size</option>
+                <option value="Large Size">Large Size</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Live Goat', 85000, 'select-goat')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="livestock">
+            <img
+              src="https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&w=800&q=80"
+              alt="Fresh Beef"
+            />
+            <div class="product-body">
+              <h3>Fresh Beef (Boneless)</h3>
+              <p class="price" data-price="8500">₦8,500</p>
+              <select id="select-beef">
+                <option value="1 kg">1 kg</option>
+                <option value="5 kg">5 kg</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Fresh Beef', 8500, 'select-beef')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="frozen">
+            <img
+              src="https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80"
+              alt="Frozen Chicken"
+            />
+            <div class="product-body">
+              <h3>Frozen Chicken (Lap)</h3>
+              <p class="price" data-price="58000">₦58,000</p>
+              <select id="select-chicken">
+                <option value="Full Carton">Full Carton</option>
+                <option value="Half Carton">Half Carton</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Frozen Chicken', 58000, 'select-chicken')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="frozen">
+            <img
+              src="https://images.unsplash.com/photo-1534476084704-dd67bc6403d1?auto=format&fit=crop&w=800&q=80"
+              alt="Frozen Titus Fish"
+            />
+            <div class="product-body">
+              <h3>Original Titus Fish</h3>
+              <p class="price" data-price="115000">₦115,000</p>
+              <select id="select-titus">
+                <option value="Full Carton">Full Carton</option>
+                <option value="Half Carton">Half Carton</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Titus Fish', 115000, 'select-titus')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="product" data-category="frozen">
+            <img
+              src="https://images.unsplash.com/photo-1474979266404-7eaacabc88c5?auto=format&fit=crop&w=800&q=80"
+              alt="Red Palm Oil"
+            />
+            <div class="product-body">
+              <h3>Pure Red Palm Oil</h3>
+              <p class="price" data-price="23500">₦23,500</p>
+              <select id="select-palmoil">
+                <option value="25 Litres">25 Litres</option>
+                <option value="10 Litres">10 Litres</option>
+                <option value="5 Litres">5 Litres</option>
+              </select>
+              <button
+                class="add-btn"
+                onclick="addToCart('Palm Oil', 23500, 'select-palmoil')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        <p
+          id="noResults"
+          style="
+            display: none;
+            text-align: center;
+            color: #888;
+            margin-top: 20px;
+          "
+        >
+          No products found in this category.
+        </p>
+      </div>
+    </section>
+
+    <!-- GIFT -->
+    <section>
+      <div class="container">
+        <h2 class="section-title">Gift Orders</h2>
+        <div class="delivery">
+          <p>
+            Send food packages to family, friends & loved ones across Nigeria.
+          </p>
+          <br />
+          <a
+            href="https://wa.me/2348121156043"
+            class="btn"
+            target="_blank"
+            rel="noopener"
+            >Order Gift Package</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <section id="reviews">
+      <div class="container">
+        <h2 class="section-title">What Customers Say</h2>
+        <div class="testimonials">
+          <div class="testimonial">
+            <p>
+              "Very fresh produce and fast delivery to Lagos. Premium service!"
+            </p>
+            <strong>— Adaeze, Lagos</strong>
+          </div>
+          <div class="testimonial">
+            <p>
+              "Ordered goat meat for celebration. Clean packaging and excellent
+              quality."
+            </p>
+            <strong>— Chinedu, Enugu</strong>
+          </div>
+          <div class="testimonial">
+            <p>
+              "Best online farm store I've used in Nigeria. Highly recommend!"
+            </p>
+            <strong>— Tunde, Abuja</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DELIVERY -->
+    <section>
+      <div class="container">
+        <div class="delivery">
+          <h2>Delivery Coverage</h2>
+          <p>
+            Lagos • Abuja • Port Harcourt • Ibadan • Benin • Enugu • Kano •
+            Nationwide Dispatch
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+      <div class="container footer-grid">
+        <div>
+          <h3>FARM-OTTAH</h3>
+          <p>
+            Premium farm produce marketplace delivering trusted freshness
+            nationwide.
+          </p>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <a href="https://wa.me/2348121156043" target="_blank" rel="noopener"
+            >+234 812 115 6043</a
+          >
+          <a href="mailto:support@farmottah.com">support@farmottah.com</a>
+          <a href="https://wa.me/2348121156043" target="_blank" rel="noopener"
+            >WhatsApp Orders</a
+          >
+        </div>
+        <div>
+          <h3>Follow Us</h3>
+          <a
+            href="https://instagram.com/farmottah"
+            target="_blank"
+            rel="noopener"
+            >Instagram</a
+          >
+          <a
+            href="https://facebook.com/farmottah"
+            target="_blank"
+            rel="noopener"
+            >Facebook</a
+          >
+          <a href="https://twitter.com/farmottah" target="_blank" rel="noopener"
+            >Twitter/X</a
+          >
+        </div>
+      </div>
+      <p class="footer-copy">&copy; 2025 Farm-Ottah. All rights reserved.</p>
+    </footer>
+
+    <!-- SCROLL TO TOP -->
+    <button
+      class="scroll-top"
+      id="scrollTop"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      aria-label="Scroll to top"
+    >
+      ↑
     </button>
-    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Toggle navigation" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-</header>
 
-<!-- CART DRAWER -->
-<div class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart">
-  <div class="cart-header">
-    <h3>Your Carte</h3>
-    <button onclick="toggleCart()" aria-label="Close cart">✕</button>
-  </div>
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast"></div>
 
-  <div id="cartItems"><p class="cart-empty">Your cart is empty.</p></div>
+    <!-- Paystack SDK -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
 
-  <div class="cart-footer" id="cartFooter" style="display:none">
-    <p class="cart-total">Total: <strong id="cartTotal">₦0</strong></p>
-
-    <!-- Customer details (shown before Paystack) -->
-    <div class="customer-form" id="customerForm">
-      <p class="form-label">Your details for order confirmation:</p>
-      <input type="text"  id="custName"    placeholder="Full Name *" required />
-      <input type="email" id="custEmail"   placeholder="Email Address *" required />
-      <input type="tel"   id="custPhone"   placeholder="Phone Number *" required />
-      <input type="text"  id="custAddress" placeholder="Delivery Address *" required />
-    </div>
-
-    <div class="checkout-btns">
-      <!-- WHATSAPP ORDER -->
-      <button class="btn-whatsapp" onclick="orderViaWhatsapp()">
-        <svg viewBox="0 0 32 32" fill="white" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16.003 3C9.376 3 4 8.373 4 15c0 2.385.67 4.61 1.832 6.5L4 29l7.695-1.807A12.94 12.94 0 0016.003 28c6.625 0 12-5.373 12-12S22.628 3 16.003 3zm0 22c-1.92 0-3.726-.502-5.287-1.38l-.378-.214-4.566 1.074 1.097-4.446-.236-.39A9.942 9.942 0 016.003 15c0-5.514 4.486-10 10-10s10 4.486 10 10-4.485 10-9.997 10zm5.49-7.43c-.302-.15-1.783-.877-2.059-.977-.276-.1-.477-.15-.678.15-.2.3-.778.977-.953 1.178-.175.2-.351.225-.652.075-.3-.15-1.267-.465-2.41-1.485-.891-.794-1.492-1.774-1.667-2.074-.175-.3-.018-.463.131-.612.135-.134.302-.35.452-.525.151-.175.2-.3.302-.5.1-.2.05-.375-.025-.525-.075-.15-.678-1.632-.928-2.235-.244-.587-.493-.508-.678-.517l-.577-.01c-.2 0-.525.075-.8.375s-1.05 1.027-1.05 2.507 1.075 2.907 1.225 3.107c.15.2 2.117 3.23 5.127 4.53.717.31 1.277.494 1.714.633.72.228 1.376.196 1.894.119.578-.086 1.782-.728 2.034-1.432.251-.703.251-1.306.176-1.432-.076-.126-.276-.2-.577-.35z"/>
-        </svg>
-        Order via WhatsApp
-      </button>
-
-      <div class="checkout-divider">or pay online</div>
-
-      <!-- PAYSTACK -->
-      <button class="btn-paystack" onclick="initiatePaystack()">
-        💳 Pay with Card / Transfer (₦<span id="paystackTotal">0</span>)
-      </button>
-    </div>
-
-    <button class="clear-btn" onclick="clearCart()">Clear Cart</button>
-  </div>
-</div>
-<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-content">
-    <h1>Fresh Farm Products Delivered Nationwide</h1>
-    <p>Premium Nigerian agricultural marketplace for homes, restaurants, events & gifts.</p>
-    <a href="#products" class="btn">Shop Now</a>
-  </div>
-</section>
-
-<!-- CATEGORIES -->
-<section id="categories">
-  <div class="container">
-    <h2 class="section-title">Shop Categories</h2>
-    <div class="grid">
-      <div class="category" onclick="filterProducts('vegetables')" data-filter="vegetables">🥬 Vegetables</div>
-      <div class="category" onclick="filterProducts('grains')" data-filter="grains">🌾 Grains</div>
-      <div class="category" onclick="filterProducts('tubers')" data-filter="tubers">🍠 Tubers</div>
-      <div class="category" onclick="filterProducts('livestock')" data-filter="livestock">🐐 Livestock</div>
-      <div class="category" onclick="filterProducts('frozen')" data-filter="frozen">🧊 Frozen Foods</div>
-      <div class="category" onclick="filterProducts('festive')" data-filter="festive">🎁 Festive Packages</div>
-      <div class="category" onclick="filterProducts('all')" data-filter="all">🛒 All Products</div>
-      <div class="category" onclick="filterProducts('pantry')" data-filter="pantry">🛢️ Oils & Pantry</div>
-    </div>
-  </div>
-</section>
-
-<!-- PRODUCTS -->
-<section id="products">
-  <div class="container">
-    <h2 class="section-title">Featured Products</h2>
-    <p id="activeFilter" class="filter-label"></p>
-
-    <div class="products" id="productGrid">
-
-      <div class="product" data-category="tubers">
-        <img src="https://media.istockphoto.com/id/1395343560/photo/whole-and-halved-raw-african-yam-on-wooden-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=wraUWRkNT_ayKhBUZA8cdOjdIaaNwexG7U4xR8SCtEo=" alt="Large Nigerian Yam Tubers">
-        <div class="product-body">
-          <h3>Large Yam (3-5 Tubers)</h3>
-          <p class="price" data-price="12500">₦12,500</p>
-          <select id="select-yam">
-            <option value="Small Bundle (3 pcs)">Small Bundle (3 pcs)</option>
-            <option value="Large Bundle (5 pcs)">Large Bundle (5 pcs)</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Large Yam', 12500, 'select-yam')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="tubers">
-        <img src="https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c3dlZXQlMjBwb3RhdG98ZW58MHx8MHx8fDA%3D" alt="Sweet Potatoes">
-        <div class="product-body">
-          <h3>Sweet Potatoes</h3>
-          <p class="price" data-price="4500">₦4,500</p>
-          <select id="select-potatoes">
-            <option value="Paint Bucket">Paint Bucket</option>
-            <option value="Small Bag">Small Bag</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Sweet Potatoes', 4500, 'select-potatoes')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="grains">
-        <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80" alt="Premium Local Rice">
-        <div class="product-body">
-          <h3>Premium Local Rice</h3>
-          <p class="price" data-price="112000">₦112,000</p>
-          <select id="select-rice">
-            <option value="50kg Bag">50kg Bag</option>
-            <option value="25kg Bag">25kg Bag</option>
-            <option value="10kg Bag">10kg Bag</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Local Rice', 112000, 'select-rice')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="grains">
-        <img src="https://images.unsplash.com/photo-1551462147-37885acc3c41?auto=format&fit=crop&w=800&q=80" alt="Brown Beans">
-        <div class="product-body">
-          <h3>Honey Beans (Oloyin)</h3>
-          <p class="price" data-price="14500">₦14,500</p>
-          <select id="select-beans">
-            <option value="Paint Bucket">Paint Bucket</option>
-            <option value="Small Bag">Small Bag</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Honey Beans', 14500, 'select-beans')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="grains">
-        <img src="https://images.unsplash.com/photo-1621460249232-02685764d0d0?auto=format&fit=crop&w=800&q=80" alt="White Garri">
-        <div class="product-body">
-          <h3>Ijebu Garri (White)</h3>
-          <p class="price" data-price="22000">₦22,000</p>
-          <select id="select-garri">
-            <option value="Small Bag">Small Bag</option>
-            <option value="Big Bag (50kg)">Big Bag (50kg)</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Ijebu Garri', 22000, 'select-garri')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="livestock">
-        <img src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80" alt="Live Goat">
-        <div class="product-body">
-          <h3>Live Local Goat</h3>
-          <p class="price" data-price="85000">₦85,000</p>
-          <select id="select-goat">
-            <option value="Medium Size">Medium Size</option>
-            <option value="Large Size">Large Size</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Live Goat', 85000, 'select-goat')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="livestock">
-        <img src="https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&w=800&q=80" alt="Fresh Beef">
-        <div class="product-body">
-          <h3>Fresh Beef (Boneless)</h3>
-          <p class="price" data-price="8500">₦8,500</p>
-          <select id="select-beef">
-            <option value="1 kg">1 kg</option>
-            <option value="5 kg">5 kg</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Fresh Beef', 8500, 'select-beef')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="frozen">
-        <img src="https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80" alt="Frozen Chicken">
-        <div class="product-body">
-          <h3>Frozen Chicken (Lap)</h3>
-          <p class="price" data-price="58000">₦58,000</p>
-          <select id="select-chicken">
-            <option value="Full Carton">Full Carton</option>
-            <option value="Half Carton">Half Carton</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Frozen Chicken', 58000, 'select-chicken')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="frozen">
-        <img src="https://images.unsplash.com/photo-1534476084704-dd67bc6403d1?auto=format&fit=crop&w=800&q=80" alt="Frozen Titus Fish">
-        <div class="product-body">
-          <h3>Original Titus Fish</h3>
-          <p class="price" data-price="115000">₦115,000</p>
-          <select id="select-titus">
-            <option value="Full Carton">Full Carton</option>
-            <option value="Half Carton">Half Carton</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Titus Fish', 115000, 'select-titus')">Add to Cart</button>
-        </div>
-      </div>
-
-      <div class="product" data-category="frozen"> <img src="https://images.unsplash.com/photo-1474979266404-7eaacabc88c5?auto=format&fit=crop&w=800&q=80" alt="Red Palm Oil">
-        <div class="product-body">
-          <h3>Pure Red Palm Oil</h3>
-          <p class="price" data-price="23500">₦23,500</p>
-          <select id="select-palmoil">
-            <option value="25 Litres">25 Litres</option>
-            <option value="10 Litres">10 Litres</option>
-            <option value="5 Litres">5 Litres</option>
-          </select>
-          <button class="add-btn" onclick="addToCart('Palm Oil', 23500, 'select-palmoil')">Add to Cart</button>
-        </div>
-      </div>
-
-    </div>
-    <p id="noResults" style="display:none; text-align:center; color:#888; margin-top:20px;">No products found in this category.</p>
-  </div>
-</section>
-
-
-<!-- GIFT -->
-<section>
-  <div class="container">
-    <h2 class="section-title">Gift Orders</h2>
-    <div class="delivery">
-      <p>Send food packages to family, friends & loved ones across Nigeria.</p><br>
-      <a href="https://wa.me/2348121156043" class="btn" target="_blank" rel="noopener">Order Gift Package</a>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIAL -->
-<section id="reviews">
-  <div class="container">
-    <h2 class="section-title">What Customers Say</h2>
-    <div class="testimonials">
-      <div class="testimonial">
-        <p>"Very fresh produce and fast delivery to Lagos. Premium service!"</p>
-        <strong>— Adaeze, Lagos</strong>
-      </div>
-      <div class="testimonial">
-        <p>"Ordered goat meat for celebration. Clean packaging and excellent quality."</p>
-        <strong>— Chinedu, Enugu</strong>
-      </div>
-      <div class="testimonial">
-        <p>"Best online farm store I've used in Nigeria. Highly recommend!"</p>
-        <strong>— Tunde, Abuja</strong>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- DELIVERY -->
-<section>
-  <div class="container">
-    <div class="delivery">
-      <h2>Delivery Coverage</h2>
-      <p>Lagos • Abuja • Port Harcourt • Ibadan • Benin • Enugu • Kano • Nationwide Dispatch</p>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer id="contact">
-  <div class="container footer-grid">
-    <div>
-      <h3>FARM-OTTAH</h3>
-      <p>Premium farm produce marketplace delivering trusted freshness nationwide.</p>
-    </div>
-    <div>
-      <h3>Contact</h3>
-      <a href="https://wa.me/2348121156043" target="_blank" rel="noopener">+234 812 115 6043</a>
-      <a href="mailto:support@farmottah.com">support@farmottah.com</a>
-      <a href="https://wa.me/2348121156043" target="_blank" rel="noopener">WhatsApp Orders</a>
-    </div>
-    <div>
-      <h3>Follow Us</h3>
-      <a href="https://instagram.com/farmottah" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://facebook.com/farmottah" target="_blank" rel="noopener">Facebook</a>
-      <a href="https://twitter.com/farmottah" target="_blank" rel="noopener">Twitter/X</a>
-    </div>
-  </div>
-  <p class="footer-copy">&copy; 2025 Farm-Ottah. All rights reserved.</p>
-</footer>
-
-<!-- SCROLL TO TOP -->
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">↑</button>
-
-<!-- TOAST NOTIFICATION -->
-<div class="toast" id="toast"></div>
-
-<!-- Paystack SDK -->
-<script src="https://js.paystack.co/v1/inline.js"></script>
-
-<script>
-// ── CONFIG — update these two lines ──
-const WHATSAPP_NUMBER = '2348121156043';        // your WA number, no +
-const PAYSTACK_PUBLIC_KEY = 'pk_live_XXXXXXXXXXXXXXXXXXXXXXXX'; // ← paste your real key
-
-// ── CART STATE ──
-let cartItems = [];
-
-function addToCart(name, price, selectId) {
-  const qty = document.getElementById(selectId).value;
-  const existing = cartItems.find(i => i.name === name && i.qty === qty);
-  if (existing) {
-    existing.count++;
-  } else {
-    cartItems.push({ name, price, qty, count: 1 });
-  }
-  updateCartUI();
-  showToast(name + ' added to cart! 🛒');
-}
-
-function removeItem(index) {
-  cartItems.splice(index, 1);
-  updateCartUI();
-}
-
-function clearCart() {
-  cartItems = [];
-  updateCartUI();
-}
-
-function getTotal() {
-  return cartItems.reduce((sum, i) => sum + i.price * i.count, 0);
-}
-
-function updateCartUI() {
-  const total = getTotal();
-  const count = cartItems.reduce((sum, i) => sum + i.count, 0);
-  document.getElementById('cartCount').textContent = count;
-  document.getElementById('paystackTotal').textContent = total.toLocaleString();
-
-  const itemsEl  = document.getElementById('cartItems');
-  const footerEl = document.getElementById('cartFooter');
-
-  if (cartItems.length === 0) {
-    itemsEl.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
-    footerEl.style.display = 'none';
-  } else {
-    itemsEl.innerHTML = cartItems.map((item, i) => `
-      <div class="cart-item">
-        <div class="cart-item-info">
-          <strong>${item.name}</strong>
-          <span class="cart-item-qty">${item.qty} × ${item.count}</span>
-        </div>
-        <div class="cart-item-right">
-          <span>₦${(item.price * item.count).toLocaleString()}</span>
-          <button class="remove-btn" onclick="removeItem(${i})" aria-label="Remove ${item.name}">✕</button>
-        </div>
-      </div>
-    `).join('');
-    document.getElementById('cartTotal').textContent = '₦' + total.toLocaleString();
-    footerEl.style.display = 'block';
-  }
-}
-
-// ── WHATSAPP ORDER ──
-function orderViaWhatsapp() {
-  if (cartItems.length === 0) { showToast('Your cart is empty!'); return; }
-
-  const total = getTotal();
-  const date  = new Date().toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' });
-
-  // Build the message
-  let msg = `🌿 *NEW ORDER — FARM-OTTAH*\n`;
-  msg += `📅 ${date}\n\n`;
-  msg += `🛒 *ORDER DETAILS:*\n`;
-  msg += `─────────────────\n`;
-
-  cartItems.forEach(item => {
-    msg += `• *${item.name}* (${item.qty})\n`;
-    msg += `  Qty: ${item.count}  →  ₦${(item.price * item.count).toLocaleString()}\n`;
-  });
-
-  msg += `─────────────────\n`;
-  msg += `💰 *TOTAL: ₦${total.toLocaleString()}*\n\n`;
-  msg += `📦 Please confirm availability and provide delivery details.\n`;
-  msg += `Thank you! 🙏`;
-
-  const encoded = encodeURIComponent(msg);
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
-}
-
-// ── PAYSTACK ──
-function initiatePaystack() {
-  if (cartItems.length === 0) { showToast('Your cart is empty!'); return; }
-
-  const total    = getTotal();
-  const name     = document.getElementById('custName').value.trim();
-  const email    = document.getElementById('custEmail').value.trim();
-  const phone    = document.getElementById('custPhone').value.trim();
-  const address  = document.getElementById('custAddress').value.trim();
-  const formEl   = document.getElementById('customerForm');
-
-  // Show the form if not visible
-  if (!formEl.classList.contains('visible')) {
-    formEl.classList.add('visible');
-    showToast('Please fill in your details, then click Pay again.');
-    return;
-  }
-
-  // Validate
-  if (!name || !email || !phone || !address) {
-    showToast('Please fill in all your details above.');
-    document.getElementById('custName').focus();
-    return;
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    showToast('Please enter a valid email address.');
-    return;
-  }
-
-  const handler = PaystackPop.setup({
-    key:      PAYSTACK_PUBLIC_KEY,
-    email:    email,
-    amount:   total * 100, // kobo
-    currency: 'NGN',
-    metadata: {
-      custom_fields: [
-        { display_name: 'Customer Name',    variable_name: 'customer_name',    value: name    },
-        { display_name: 'Phone',            variable_name: 'phone',            value: phone   },
-        { display_name: 'Delivery Address', variable_name: 'delivery_address', value: address },
-        { display_name: 'Order Summary',    variable_name: 'order_summary',
-          value: cartItems.map(i => `${i.name} (${i.qty}) x${i.count}`).join(', ') }
-      ]
-    },
-    callback: function(response) {
-      showToast('✅ Payment successful! Ref: ' + response.reference);
-      // Auto-send a WhatsApp confirmation too
-      sendPaymentConfirmationWA(response.reference, name, phone, address, total);
-      clearCart();
-      toggleCart();
-    },
-    onClose: function() {
-      showToast('Payment window closed.');
-    }
-  });
-
-  handler.openIframe();
-}
-
-// After successful payment, also ping WA with confirmation
-function sendPaymentConfirmationWA(ref, name, phone, address, total) {
-  const date = new Date().toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' });
-  let msg  = `✅ *PAYMENT CONFIRMED — FARM-OTTAH*\n`;
-  msg += `📅 ${date}\n\n`;
-  msg += `👤 *${name}*\n`;
-  msg += `📞 ${phone}\n`;
-  msg += `📍 ${address}\n\n`;
-  msg += `🛒 *ITEMS:*\n`;
-  cartItems.forEach(item => {
-    msg += `• ${item.name} (${item.qty}) ×${item.count} — ₦${(item.price * item.count).toLocaleString()}\n`;
-  });
-  msg += `\n💰 *TOTAL PAID: ₦${total.toLocaleString()}*\n`;
-  msg += `🔖 *Paystack Ref:* ${ref}\n\n`;
-  msg += `Please process this order for delivery. Thank you! 🙏`;
-
-  const encoded = encodeURIComponent(msg);
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
-}
-
-// ── CART DRAWER ──
-function toggleCart() {
-  const drawer  = document.getElementById('cartDrawer');
-  const overlay = document.getElementById('cartOverlay');
-  const isOpen  = drawer.classList.toggle('open');
-  overlay.classList.toggle('open', isOpen);
-  document.body.style.overflow = isOpen ? 'hidden' : '';
-}
-
-// ── MOBILE NAV ──
-function toggleNav() {
-  const nav = document.getElementById('navLinks');
-  const btn = document.getElementById('hamburger');
-  const isOpen = nav.classList.toggle('open');
-  btn.setAttribute('aria-expanded', isOpen);
-  btn.classList.toggle('active', isOpen);
-}
-
-document.querySelectorAll('#navLinks a').forEach(link => {
-  link.addEventListener('click', () => {
-    document.getElementById('navLinks').classList.remove('open');
-    document.getElementById('hamburger').classList.remove('active');
-  });
-});
-
-// ── CATEGORY FILTER ──
-function filterProducts(category) {
-  const products = document.querySelectorAll('.product');
-  const label    = document.getElementById('activeFilter');
-  const noResults= document.getElementById('noResults');
-
-  document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
-  document.querySelector(`[data-filter="${category}"]`).classList.add('active');
-
-  let visible = 0;
-  products.forEach(p => {
-    const match = category === 'all' || p.dataset.category === category;
-    p.style.display = match ? 'block' : 'none';
-    if (match) visible++;
-  });
-
-  label.textContent = category === 'all' ? '' : `Showing: ${category.charAt(0).toUpperCase() + category.slice(1)}`;
-  noResults.style.display = visible === 0 ? 'block' : 'none';
-  document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-}
-
-// ── SCROLL TO TOP ──
-window.addEventListener('scroll', () => {
-  document.getElementById('scrollTop').style.display = window.scrollY > 400 ? 'flex' : 'none';
-});
-
-// ── ACTIVE NAV ON SCROLL ──
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('nav ul a');
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
-  navLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === '#' + current); });
-});
-
-// ── TOAST ──
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2800);
-}
-</script>
-
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>
