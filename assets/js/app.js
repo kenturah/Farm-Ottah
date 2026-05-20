@@ -281,7 +281,7 @@ function initiatePaystack() {
           variable_name: "customer_name",
           value: name,
         },
-        { display_name: "Phone", variable_name: "phone", value: phone },
+        { display_name: "Phone",   variable_name: "phone", value: phone },
         {
           display_name: "Delivery Address",
           variable_name: "delivery_address",
